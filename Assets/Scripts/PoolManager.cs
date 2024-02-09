@@ -6,10 +6,17 @@ public class PoolManager : MonoBehaviour
 {
     public static PoolManager Instance;
 
-    [SerializeField] string parentName;
-    [SerializeField] GameObject prefab;
-    [SerializeField] int poolSize;
-    [SerializeField] List<GameObject> pooledObjects;
+    [System.Serializable]
+
+    public class Pool
+    {
+    public string parentName;
+    public GameObject prefab;
+    public int poolSize;
+    public List<GameObject> pooledObjects;
+    }
+
+    [SerializeField] List<Pool> pools;
 
     void Awake()
     {
@@ -25,27 +32,31 @@ public class PoolManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject parent = new GameObject(parentName);
         
         GameObject obj;
 
-        for (int i = 0; i < poolSize; i++)
+        foreach (Pool pool in pools)
         {
-            obj = Instantiate(prefab);
-            obj.transform.SetParent(parent.transform);
-            obj.SetActive(false);
-            pooledObjects.Add(obj);
+            GameObject parent = new GameObject(pool.parentName);
+            
+            for (int i = 0; i < pool.poolSize; i++)
+            {
+               obj = Instantiate(pool.prefab);
+               obj.transform.SetParent(parent.transform);
+               obj.SetActive(false);
+               pool.pooledObjects.Add(obj);
+            }
         }
     }
 
-    public GameObject GetPooledObjects(Vector3 position, Quaternion rotation)
+    public GameObject GetPooledObjects(int selectedPool, Vector3 position, Quaternion rotation)
     {
-        for (int i = 0; i < poolSize; i++)
+        for (int i = 0; i < pools[selectedPool].poolSize; i++)
         {
-            if(!pooledObjects[i].activeInHierarchy)
+            if(!pools[selectedPool].pooledObjects[i].activeInHierarchy)
             {
                 GameObject objectToSpawn;
-                objectToSpawn = pooledObjects[i];
+                objectToSpawn = pools[selectedPool].pooledObjects[i];
                 objectToSpawn.transform.position = position;
                 objectToSpawn.transform.rotation = rotation;
                 return objectToSpawn;

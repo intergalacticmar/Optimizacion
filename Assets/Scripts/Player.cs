@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] Transform gunPosition;
+    [SerializeField] int bulletType = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class Player : MonoBehaviour
     {
        if(Input.GetButtonDown("Fire1")) 
        {
-          GameObject bullet = PoolManager.Instance.GetPooledObjects(gunPosition.position, gunPosition.rotation);
+          GameObject bullet = PoolManager.Instance.GetPooledObjects(bulletType, gunPosition.position, gunPosition.rotation);
           
           if(bullet != null)
           {
