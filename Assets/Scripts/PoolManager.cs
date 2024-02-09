@@ -29,7 +29,7 @@ public class PoolManager : MonoBehaviour
         
         GameObject obj;
 
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < poolSize; i++)
         {
             obj = Instantiate(prefab);
             obj.transform.SetParent(parent.transform);
@@ -38,9 +38,20 @@ public class PoolManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public GameObject GetPooledObjects(Vector3 position, Quaternion rotation)
     {
-        
+        for (int i = 0; i < poolSize; i++)
+        {
+            if(!pooledObjects[i].activeInHierarchy)
+            {
+                GameObject objectToSpawn;
+                objectToSpawn = pooledObjects[i];
+                objectToSpawn.transform.position = position;
+                objectToSpawn.transform.rotation = rotation;
+                return objectToSpawn;
+            }
+        }
+
+        return null;
     }
 }
